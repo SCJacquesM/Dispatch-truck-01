@@ -1352,20 +1352,12 @@ function openJobModal(jobId,prefill={}){
 
 // ── Modal helper — always renders at body level ───────────────
 function getModalContainer() {
-  let mc = getModalContainer();
+  let mc = document.getElementById('modal-container');
   if (!mc) {
     mc = document.createElement('div');
     mc.id = 'modal-container';
     document.body.appendChild(mc);
   }
-  // Ensure it's visible and interactive regardless of panel state
-  mc.style.display = 'block';
-  mc.style.position = 'fixed';
-  mc.style.top = '0';
-  mc.style.left = '0';
-  mc.style.width = '100%';
-  mc.style.height = '100%';
-  mc.style.zIndex = '9000';
   mc.style.pointerEvents = 'auto';
   return mc;
 }
