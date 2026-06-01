@@ -2341,6 +2341,7 @@ function wireQuoteCalculator(matId, yardsId, truckId, zoneId, containerId, onQuo
 }
 
 function openOrderModal(orderId=null){
+  alert('openOrderModal fired! orderId=' + orderId);
   const mc=getModalContainer();
   const isEdit=!!orderId;
   const order=isEdit?orderById(orderId):{};
