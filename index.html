@@ -2341,33 +2341,21 @@ function wireQuoteCalculator(matId, yardsId, truckId, zoneId, containerId, onQuo
 }
 
 function openOrderModal(orderId=null){
-  alert('openOrderModal fired! orderId=' + orderId);
-  const mc=getModalContainer();
-  const isEdit=!!orderId;
-  const order=isEdit?orderById(orderId):{};
-
-  const pinned=customers.filter(c=>c.id.startsWith('special-'));
-  const regular=[...customers.filter(c=>!c.id.startsWith('special-'))].sort((a,b)=>a.name.localeCompare(b.name));
-  const custOpts=`<option value="">— Select customer / job —</option>`
-    +pinned.map(c=>`<option value="${c.name}"${order.customer===c.name?' selected':''}>${c.name}</option>`).join('')
-    +`<option disabled>──────────────</option>`
-    +regular.map(c=>`<option value="${c.name}"${order.customer===c.name?' selected':''}>${c.name}</option>`).join('')
-    +`<option value="__new__">＋ Type new customer...</option>`;
-
-  const matOpts=MATERIALS.map(m=>`<option value="${m}"${order.material===m?' selected':''}>${m}</option>`).join('');
-  const statusOpts=['pending','scheduled','in-progress','completed'].map(s=>`<option value="${s}"${(order.status||'pending')===s?' selected':''}>${{pending:'Pending',scheduled:'Scheduled','in-progress':'In Progress',completed:'Completed'}[s]}</option>`).join('');
-
-  const timeOpts=(sel='')=>{let o='<option value="">Any time</option>';for(let h=5;h<20;h++){const lh=h<=12?h:h-12,ap=h<12?'am':'pm';o+=`<option value="${h}:00"${sel===h+':00'?' selected':''}>${lh}:00 ${ap}</option>`;o+=`<option value="${h}:30"${sel===h+':30'?' selected':''}>${lh}:30 ${ap}</option>`;}return o;};
-
-  const staffOpts=['','Nadine','Frank','Barry','JonC','Tim','Jacques','__other__'].map(n=>
-    n===''?'<option value="">— Select name —</option>':
-    n==='__other__'?`<option value="__other__"${order.takenBy&&!['Nadine','Frank','Barry','JonC','Tim','Jacques'].includes(order.takenBy)?' selected':''}>Other...</option>`:
-    `<option value="${n}"${order.takenBy===n?' selected':''}>${n}</option>`
-  ).join('');
-
-  const knownStaff=['Nadine','Frank','Barry','JonC','Tim','Jacques'];
-  const takenByOther=order.takenBy&&!knownStaff.includes(order.takenBy)?order.takenBy:'';
-
+    const mc=getModalContainer();
+    const isEdit=!!orderId;
+    const order=isEdit?orderById(orderId):{};
+    const pinned=customers.filter(c=>c.id.startsWith('special-'));
+    const regular=[...customers.filter(c=>!c.id.startsWith('special-'))].sort((a,b)=>a.name.localeCompare(b.name));
+    const custOpts=`<option value="">— Select customer / job —</option>`
+      +pinned.map(c=>`<option value="${c.name}"${order.customer===c.name?' selected':''}>${c.name}</option>`).join('')
+      +`<option disabled>──────────────</option>`
+      +regular.map(c=>`<option value="${c.name}"${order.customer===c.name?' selected':''}>${c.name}</option>`).join('')
+      +`<option value="__new__">＋ Type new customer...</option>`;
+    const matOpts=MATERIALS.map(m=>`<option value="${m}"${order.material===m?' selected':''}>${m}</option>`).join('');
+    const staffOpts=`<option value="">— Select —</option>`+STAFF.map(s=>`<option value="${s}"${order.takenBy===s?' selected':''}>${s}</option>`).join('')+`<option value="__other__">Other...</option>`;
+    const takenByOther=order.takenBy&&!STAFF.includes(order.takenBy)?order.takenBy:'';
+    const statusOpts=['pending','scheduled','in-progress','completed'].map(s=>`<option value="${s}"${(order.status||'pending')===s?' selected':''}>${{pending:'Pending',scheduled:'Scheduled','in-progress':'In Progress',completed:'Completed'}[s]}</option>`).join('');
+    const timeOpts=(sel='')=>{let o='<option value="">Any time</option>';for(let h=5;h<20;h++){const lh=h<=12?h:h-12,ap=h<12?'am':'pm';o+=`<option value="${h}:00"${sel===h+':00'?' selected':''}>${lh}:00 ${ap}</option>`;o+=`<option value="${h}:30"${sel===h+':30'?' selected':''}>${lh}:30 ${ap}</option>`;}return o;};
   mc.innerHTML=`<div class="modal-bg" id="order-mbg">
     <div class="modal" style="width:480px;max-height:92vh;overflow-y:auto">
       <h2><i class="ti ti-clipboard-list" style="font-size:14px"></i>${isEdit?'Edit order':'New order'}</h2>
@@ -2532,7 +2520,7 @@ function openOrderModal(orderId=null){
     else orders.push(newOrder);
     await saveOrders();mc.innerHTML='';renderOrdersPanel();updateOrdersBadge();updatePendingDisplay();
   };
-  }catch(err){console.error('Order modal wiring error:',err);}
+  }catch(err){console.error('Order modal error:',err);}
 }
 
 
