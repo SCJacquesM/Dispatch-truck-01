@@ -1120,7 +1120,7 @@ function matOptions(selected=''){
 }
 
 function openJobModal(jobId,prefill={}){
-  const mc=document.getElementById('modal-container'),isEdit=!!jobId;
+  const mc=getModalContainer(),isEdit=!!jobId;
   const job=isEdit?getJobs().find(j=>j.id===jobId):null;
   const p=job?{...job,startH:DAY_START+Math.floor(+job.startSlot/2),startM:(+job.startSlot%2)*30}:prefill;
   const defH=p.startH!=null?+p.startH:7,defM=p.startM!=null?+p.startM:0;
@@ -1350,7 +1350,25 @@ function openJobModal(jobId,prefill={}){
 }
 
 
-// ── Orders queue variables (declared early — used in top-level wiring below) ──
+// ── Modal helper — always renders at body level ───────────────
+function getModalContainer() {
+  let mc = getModalContainer();
+  if (!mc) {
+    mc = document.createElement('div');
+    mc.id = 'modal-container';
+    document.body.appendChild(mc);
+  }
+  // Ensure it's visible and interactive regardless of panel state
+  mc.style.display = 'block';
+  mc.style.position = 'fixed';
+  mc.style.top = '0';
+  mc.style.left = '0';
+  mc.style.width = '100%';
+  mc.style.height = '100%';
+  mc.style.zIndex = '9000';
+  mc.style.pointerEvents = 'auto';
+  return mc;
+}
 const ORDERS_KEY='dispatchboard_orders_v1';
 let orders=[];
 let ordersDragId=null;
@@ -1519,7 +1537,7 @@ async function loadCustomers(){
 function custById(id){return customers.find(c=>c.id===id)}
 
 function openCustomerManager(){
-  const mc=document.getElementById('modal-container');
+  const mc=getModalContainer();
   let cmSearch='';
   let cmEditId=null; // null = add mode, string = edit mode
 
@@ -2331,7 +2349,7 @@ function wireQuoteCalculator(matId, yardsId, truckId, zoneId, containerId, onQuo
 }
 
 function openOrderModal(orderId=null){
-  const mc=document.getElementById('modal-container');
+  const mc=getModalContainer();
   const isEdit=!!orderId;
   const order=isEdit?orderById(orderId):{};
 
@@ -2526,7 +2544,7 @@ function openOrderModal(orderId=null){
 
 
 function openFloatModal(floatId=null){
-  const mc=document.getElementById('modal-container');
+  const mc=getModalContainer();
   const isEdit=!!floatId;
   const order=isEdit?orderById(floatId):{};
 
@@ -2683,7 +2701,7 @@ function openFloatModal(floatId=null){
 }
 
 function openPickupModal(pickupId=null){
-  const mc=document.getElementById('modal-container');
+  const mc=getModalContainer();
   const isEdit=!!pickupId;
   const order=isEdit?orderById(pickupId):{};
 
@@ -2872,7 +2890,7 @@ function openPickupModal(pickupId=null){
 }
 
 function openDumpModal(dumpId=null){
-  const mc=document.getElementById('modal-container');
+  const mc=getModalContainer();
   const isEdit=!!dumpId;
   const order=isEdit?orderById(dumpId):{};
 
